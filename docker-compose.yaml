@@ -14,7 +14,7 @@ services:
     ports:
       - 8080:8080
       - 8020:8020
-      - 8021:8021
+      - 7860:7860
     shm_size: "32gb"
     tty: true
     gpus: all

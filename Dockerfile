@@ -52,6 +52,16 @@ RUN python3 -m pip install \
     "numpy<2" \
     loguru
 
+# fast3r
+WORKDIR /tmp
+RUN git clone https://github.com/facebookresearch/fast3r
+WORKDIR /tmp/fast3r
+RUN python3 -m pip install --ignore-installed  -r requirements.txt
+RUN python3 -m pip install -e .
+WORKDIR /tmp/fast3r/fast3r/croco/models/curope
+RUN sed -i 's/tokens\.type()/tokens.scalar_type()/g' kernels.cu
+RUN python3 setup.py build_ext --inplace
+
 
 # # Clean
 # RUN apt -y autoremove -y --purge \
