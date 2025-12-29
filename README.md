@@ -79,6 +79,32 @@ conda create -n trace_anything python=3.10
 conda activate trace_anything
 ```
 
+Lambda Cloud:
+```bash
+ssh ubuntu@209.20.159.114 -i ~/.ssh/lambda_cloud
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/DenDen047/dotfiles/refs/heads/master/setup_scripts/lambda_cloud1.sh | bash
+# if failed in the last step
+sudo apt-get update && sudo apt-get install -y lambda-stack-cuda && sudo reboot
+
+# after reboot, run the following command
+curl -fsSL https://raw.githubusercontent.com/DenDen047/dotfiles/refs/heads/master/setup_scripts/lambda_cloud2.sh | bash
+```
+
+```bash
+cd TraceAnything
+docker compose up -d --build
+docker exec -it trace-anything /bin/bash
+```
+
+```bash
+mkdir -p checkpoints
+cd checkpoints
+wget https://huggingface.co/depth-anything/trace-anything/resolve/main/trace_anything.pt?download=true -O trace_anything.pt
+```
+
 ### Requirements
 
 * **Python** ≥ 3.10
@@ -91,7 +117,7 @@ conda activate trace_anything
 
 **Notes**
 
-- **CUDA:** Tested with **CUDA 12.8**.  
+- **CUDA:** Tested with **CUDA 12.8**.
 - **GPU Memory:** The provided examples are tested to run on a **single GPU with ≥ 48 GB VRAM**.
 
 
@@ -181,7 +207,7 @@ Results are saved to:
 
 ## Optional: User-Guided Masks with SAM2
 
-If you prefer **user-guided SAM2 masks** instead of the automatic masks computed from Trace Anything outputs (for visualization), we provide a helper script [`scripts/user_mask.py`](scripts/user_mask.py). This script lets you interactively select points on the first frame of a scene to produce per-frame foreground masks. 
+If you prefer **user-guided SAM2 masks** instead of the automatic masks computed from Trace Anything outputs (for visualization), we provide a helper script [`scripts/user_mask.py`](scripts/user_mask.py). This script lets you interactively select points on the first frame of a scene to produce per-frame foreground masks.
 
 Install [SAM2](https://github.com/facebookresearch/sam2) and download its checkpoint. Then run with:
 
@@ -252,7 +278,7 @@ We sincerely thank the authors of the open-source repositories [DUSt3R](https://
 
 ## License
 
-- **Code**: Licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).  
+- **Code**: Licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
 - **Model weights**: Licensed under the [CC BY-NC 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/). These weights are provided for research and non-commercial use only.
 
 ## Citation
@@ -261,12 +287,12 @@ If you find our repository useful, please consider giving it a star ⭐ and citi
 
 ```bibtex
 @misc{liu2025traceanythingrepresentingvideo,
-      title={Trace Anything: Representing Any Video in 4D via Trajectory Fields}, 
+      title={Trace Anything: Representing Any Video in 4D via Trajectory Fields},
       author={Xinhang Liu and Yuxi Xiao and Donny Y. Chen and Jiashi Feng and Yu-Wing Tai and Chi-Keung Tang and Bingyi Kang},
       year={2025},
       eprint={2510.13802},
       archivePrefix={arXiv},
       primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2510.13802}, 
+      url={https://arxiv.org/abs/2510.13802},
 }
 ```
