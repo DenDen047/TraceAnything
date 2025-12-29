@@ -7,16 +7,14 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./:/home/user/work/:rw
-      - /mnt:/mnt:rw
-      - /tmp/.X11-unix:/tmp/.X11-unix:ro
-    command: >
-      bash -c " source /home/user/entrypoint.sh && /bin/bash "
+    command: /bin/bash
     environment:
       - USER_ID=1000
       - GROUP_ID=1000
-      - DISPLAY=$DISPLAY
     ports:
       - 8080:8080
+      - 8020:8020
+      - 7860:7860
     shm_size: "32gb"
     tty: true
     gpus: all

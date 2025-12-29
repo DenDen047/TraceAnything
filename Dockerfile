@@ -49,8 +49,18 @@ RUN python3 -m pip install \
     viser \
     imageio \
     matplotlib \
-    "numpy<2"
+    "numpy<2" \
+    loguru
 
+# fast3r
+WORKDIR /tmp
+RUN git clone https://github.com/facebookresearch/fast3r
+WORKDIR /tmp/fast3r
+RUN python3 -m pip install --ignore-installed  -r requirements.txt
+RUN python3 -m pip install -e .
+WORKDIR /tmp/fast3r/fast3r/croco/models/curope
+RUN sed -i 's/tokens\.type()/tokens.scalar_type()/g' kernels.cu
+RUN python3 setup.py build_ext --inplace
 
 
 # # Clean
@@ -60,4 +70,4 @@ RUN python3 -m pip install \
 #     && rm -rf /var/lib/apt/lists/*
 
 USER $USER_NAME
-WORKDIR /home/$USER_NAME/
+WORKDIR /home/$USER_NAME/work/
