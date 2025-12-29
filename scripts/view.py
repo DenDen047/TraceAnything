@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Bytedance Ltd. and/or its affiliates
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -35,6 +35,7 @@ import numpy as np
 import torch
 import cv2
 import viser
+from loguru import logger
 
 # ---- tiny helpers ----
 def to_numpy(x):
@@ -73,7 +74,7 @@ def load_output_dict(path_or_dir: str) -> Dict:
     return out
 
 def save_images(frames: List[Dict], images_dir: str):
-    print(f"[viewer] Saving images to: {images_dir}")
+    logger.info(f"Saving images to: {images_dir}")
     ensure_dir(images_dir)
     for i, fr in enumerate(frames):
         cv2.imwrite(os.path.join(images_dir, f"{i:03d}.png"),
@@ -92,7 +93,7 @@ def _load_fg_mask_for_index(root_dir: str, idx: int, pred: Dict) -> np.ndarray:
     def _ret(mask_bool: np.ndarray, src: str) -> np.ndarray:
         key = (root_dir, idx)
         if key not in _REPORTED_MASK_SRC and os.environ.get("TA_SILENCE_MASK_SRC") != "1":
-            print(f"[viewer] frame {idx:03d}: using {src}")
+            logger.debug(f"frame {idx:03d}: using {src}")
             _REPORTED_MASK_SRC.add(key)
         return mask_bool
 
@@ -302,11 +303,11 @@ def build_bg_nodes(server: viser.ViserServer, frames: List[Dict], init_percentil
             visible=True,
         )
         state.bg_nodes.append(node)
-        print(f"[viewer] BG frame={i:02d}: add {pts.shape[0]} pts")
+        logger.debug(f"BG frame={i:02d}: add {pts.shape[0]} pts")
 
 def build_fg_nodes(server: viser.ViserServer, frames: List[Dict], nearest_idx: np.ndarray, t_vals: np.ndarray,
                    fg_conf_all_t: List[np.ndarray], init_percentile: float, state: ViewerState):
-    print("\n[viewer] Building FG nodes per timeline step …")
+    logger.info("Building FG nodes per timeline step …")
     T = len(t_vals)
     for t in range(T):
         fi = int(nearest_idx[t])
@@ -326,7 +327,7 @@ def build_fg_nodes(server: viser.ViserServer, frames: List[Dict], nearest_idx: n
             visible=(t == 0),
         )
         state.fg_nodes.append(node)
-        print(f"[viewer] t={t:02d}: add FG node with {pts_k.shape[0]} pts")
+        logger.debug(f"t={t:02d}: add FG node with {pts_k.shape[0]} pts")
 
 def update_conf_filtering(server: viser.ViserServer, state: ViewerState, frames: List[Dict], nearest_idx: np.ndarray,
                           t_vals: np.ndarray, fg_conf_all_t: List[np.ndarray], bg_conf_all_flat: np.ndarray,
@@ -477,7 +478,7 @@ def serve_view(output: Dict, port: int = 8020, t_step: float = 0.1, ds: int = 2)
 
     # save images only (masks are assumed precomputed)
     save_images(frames, images_dir)
-    print(f"[viewer] Using precomputed FG masks in: {masks_dir} (or preds['fg_mask*'])")
+    logger.info(f"Using precomputed FG masks in: {masks_dir} (or preds['fg_mask*'])")
 
     state = ViewerState()
     with server.gui.add_folder("Point Size", expand_by_default=True):
@@ -663,10 +664,14 @@ def parse_args():
     p.add_argument("--port", type=int, default=8020)
     p.add_argument("--t_step", type=float, default=0.025)
     p.add_argument("--ds", type=int, default=1, help="downsample stride for H,W (>=1)")
+    p.add_argument("--log-level", type=str, default="INFO",
+                   choices=["DEBUG", "INFO", "WARNING", "ERROR"])
     return p.parse_args()
 
 def main():
     args = parse_args()
+    logger.remove()
+    logger.add(sys.stderr, level=args.log_level)
     out = load_output_dict(args.output)
     server = serve_view(out, port=args.port, t_step=args.t_step, ds=max(1, args.ds))
     try:

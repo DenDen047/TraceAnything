@@ -81,7 +81,7 @@ conda activate trace_anything
 
 Lambda Cloud:
 ```bash
-ssh ubuntu@209.20.159.114 -i ~/.ssh/lambda_cloud
+ssh -L 8020:localhost:8020 ubuntu@209.20.156.169 -i ~/.ssh/lambda_cloud
 ```
 
 ```bash
@@ -242,7 +242,7 @@ Our visualizer lets you explore the trajectory field interactively:
 Fire up the interactive 3D viewer and dive your trajectory fields:
 
 ```bash
-python scripts/view.py --output examples/output/<scene>/output.pt
+python scripts/view.py --output examples/output/<scene>/output.pt --port 8020
 ```
 
 ### Useful flags
