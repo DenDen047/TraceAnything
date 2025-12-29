@@ -52,7 +52,6 @@ RUN python3 -m pip install \
     "numpy<2"
 
 
-
 # # Clean
 # RUN apt -y autoremove -y --purge \
 #   && apt -y clean \
@@ -60,4 +59,4 @@ RUN python3 -m pip install \
 #     && rm -rf /var/lib/apt/lists/*
 
 USER $USER_NAME
-WORKDIR /home/$USER_NAME/
+WORKDIR /home/$USER_NAME/work/

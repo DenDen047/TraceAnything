@@ -1,7 +1,7 @@
 {
 	"lambda_cloud": {
 		"type": "sftp",
-		"host": "209.20.159.114",
+		"host": "209.20.156.169",
 		"port": 22,
 		"username": "ubuntu",
 		"privateKeyPath": "/Users/ikuta/.ssh/lambda_cloud",
