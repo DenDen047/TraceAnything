@@ -49,7 +49,8 @@ RUN python3 -m pip install \
     viser \
     imageio \
     matplotlib \
-    "numpy<2"
+    "numpy<2" \
+    loguru
 
 
 # # Clean
