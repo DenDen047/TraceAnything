@@ -81,7 +81,7 @@ conda activate trace_anything
 
 Lambda Cloud:
 ```bash
-ssh -L 8020:localhost:8020 ubuntu@209.20.156.169 -i ~/.ssh/lambda_cloud
+ssh -L 8020:localhost:8020 ubuntu@IP_ADDRESS -i ~/.ssh/lambda_cloud
 ```
 
 ```bash
