@@ -9,8 +9,7 @@ services:
       - ./:/home/user/work/:rw
       - /mnt:/mnt:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
-    command: >
-      bash -c " source /home/user/entrypoint.sh && /bin/bash "
+    command: /bin/bash
     environment:
       - USER_ID=1000
       - GROUP_ID=1000
